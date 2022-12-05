@@ -4,11 +4,11 @@ import dotenv from "dotenv";
 import usuarioRoutes from "./routes/usuarioRoutes.js";
 import conectarDB from "./config/dbconfig.js";
 
+dotenv.config();
+
 const app = express();
 
 app.use(express.json());
-
-dotenv.config();
 
 conectarDB();
 

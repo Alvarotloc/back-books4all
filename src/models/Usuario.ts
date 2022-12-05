@@ -1,7 +1,11 @@
-import mongoose from "mongoose";
+import { Model, Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 
-const usuarioSchema = new mongoose.Schema(
+import { IUsuario, IUsermethods } from "../interfaces/Usuario.interface.js";
+
+type UserModel = Model<IUsuario, {}, IUsermethods>;
+
+const usuarioSchema = new Schema<IUsuario, UserModel, IUsermethods>(
   {
     nombre: {
       type: String,
@@ -41,6 +45,14 @@ usuarioSchema.pre("save", async function (next) {
   this.password = await bcrypt.hash(this.password!, salt);
 });
 
-const Usuario = mongoose.model("Usuario", usuarioSchema);
+usuarioSchema.method("comprobarPassword", async function (password: string) {
+  return await bcrypt.compare(password, this.password);
+});
+
+// usuarioSchema.methods.comprobarPassword = async function (password: string) {
+//   return await bcrypt.compare(password, this.password);
+// };
+
+const Usuario = model<IUsuario, UserModel>("Usuario", usuarioSchema);
 
 export default Usuario;
