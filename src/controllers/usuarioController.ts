@@ -55,5 +55,17 @@ const loginUsuario = async (req: Request, res: Response) => {
     token,
   });
 };
+const confirmarCuenta = async (req: Request, res: Response) => {
+  const { token } = req.params;
+  const usuario = await Usuario.findOne({ token });
+  if (!usuario) {
+    const error = new Error("No existe usuario con ese token");
+    return res.status(404).json({ msg: error.message });
+  }
+  usuario.token = "";
+  usuario.confirmado = true;
+  usuario.save();
+  res.json({ msg: "Usuario Confirmado Con Éxito" });
+};
 
-export { registrarUsuario, loginUsuario };
+export { registrarUsuario, loginUsuario, confirmarCuenta };
